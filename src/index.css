@@ -4,7 +4,8 @@
 
 @layer base {
   body {
-    @apply bg-netflix-black text-white;
+    @apply bg-netflix-black text-white overflow-x-hidden max-w-full;
+    -webkit-text-size-adjust: 100%;
   }
 }
 
@@ -14,7 +15,7 @@
   }
   
   .netflix-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden;
   }
 
   .movie-card {
@@ -31,19 +32,19 @@
 
   /* Loading animation */
   .shimmer {
-    @apply relative overflow-hidden bg-netflix-dark/50;
-  }
-
-  .shimmer::after {
-    content: '';
-    @apply absolute top-0 left-0 w-full h-full;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    @apply relative overflow-hidden;
+    background: linear-gradient(90deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+    background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 
   @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   /* Hide scrollbar utility */
@@ -187,4 +188,71 @@
   .netflix-scroll-row::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+}
+
+/* Custom shimmer animation for loading */
+.shimmer {
+  @apply relative overflow-hidden;
+  background: linear-gradient(90deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Ensure text doesn't overflow */
+body {
+  @apply overflow-x-hidden max-w-full;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Force proper box-sizing for all elements */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Responsive font sizing */
+html {
+  font-size: 14px;
+  @screen sm {
+    font-size: 15px;
+  }
+  @screen md {
+    font-size: 16px;
+  }
+}
+
+/* Ensure images don't cause overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix word breaking for long URLs or text */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+
+/* Custom Netflix-inspired colors */
+:root {
+  --netflix-red: #e50914;
+  --netflix-black: #141414;
+  --netflix-dark: #181818;
+}
+
+/* Disable horizontal scrollbar */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
 }

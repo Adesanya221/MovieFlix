@@ -239,7 +239,7 @@ const WatchPartyPage: React.FC = () => {
       </div>
       
       {/* Main Content */}
-      <div className="netflix-container py-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="netflix-container py-4 md:py-6 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
         {/* Left Column - Video Player */}
         <div className="md:col-span-2">
           <div className="bg-netflix-dark rounded-lg overflow-hidden">
@@ -270,9 +270,9 @@ const WatchPartyPage: React.FC = () => {
             
             {/* Video Info */}
             <div className="p-4">
-              <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
-              <p className="text-gray-400 mt-1">{movie.release_date.split('-')[0]} • {movie.vote_average.toFixed(1)} ⭐</p>
-              <p className="text-gray-300 mt-3">{movie.overview}</p>
+              <h2 className="text-xl md:text-2xl font-bold text-white">{movie.title}</h2>
+              <p className="text-sm md:text-base text-gray-400 mt-1">{movie.release_date.split('-')[0]} • {movie.vote_average.toFixed(1)} ⭐</p>
+              <p className="text-sm md:text-base text-gray-300 mt-3 line-clamp-3 md:line-clamp-none">{movie.overview}</p>
               
               {/* Create Party Options (only shown when not connected) */}
               {!isConnected && (
@@ -287,7 +287,7 @@ const WatchPartyPage: React.FC = () => {
                       onChange={() => setIsPrivate(!isPrivate)}
                       className="w-4 h-4 rounded"
                     />
-                    <label htmlFor="privateParty" className="ml-2 text-gray-300">
+                    <label htmlFor="privateParty" className="ml-2 text-gray-300 text-sm md:text-base">
                       Make this a private watch party (requires access code)
                     </label>
                   </div>
@@ -316,7 +316,7 @@ const WatchPartyPage: React.FC = () => {
                 {/* Chat Messages */}
                 <div 
                   ref={chatContainerRef}
-                  className="flex-1 overflow-y-auto p-3 space-y-3 max-h-[500px]"
+                  className="flex-1 overflow-y-auto p-2 md:p-3 space-y-2 md:space-y-3 max-h-[350px] md:max-h-[500px]"
                 >
                   {messages.map((message, index) => (
                     <div key={index} className={`${
@@ -327,11 +327,11 @@ const WatchPartyPage: React.FC = () => {
                           : 'text-left'
                     }`}>
                       {message.type === 'system' ? (
-                        <div className="bg-gray-800/50 inline-block px-3 py-1 rounded">
+                        <div className="bg-gray-800/50 inline-block px-3 py-1 rounded text-xs md:text-sm">
                           {message.content}
                         </div>
                       ) : message.type === 'reaction' ? (
-                        <div className={`inline-block max-w-[85%] ${
+                        <div className={`inline-block max-w-[90%] ${
                           message.senderId === userId ? 'bg-blue-600' : 'bg-gray-700'
                         } rounded-lg p-2`}>
                           <p className={`text-xs ${
@@ -345,15 +345,15 @@ const WatchPartyPage: React.FC = () => {
                                 src={message.reactionGifUrl} 
                                 alt={message.content}
                                 className="w-full object-contain"
-                                style={{ maxHeight: '150px' }}
+                                style={{ maxHeight: '120px' }}
                                 loading="lazy"
                               />
                             </div>
                           )}
-                          <p className="text-white text-sm mt-1">{message.content}</p>
+                          <p className="text-white text-xs md:text-sm mt-1">{message.content}</p>
                         </div>
                       ) : (
-                        <div className={`inline-block max-w-[85%] ${
+                        <div className={`inline-block max-w-[90%] ${
                           message.senderId === userId ? 'bg-blue-600' : 'bg-gray-700'
                         } rounded-lg p-2`}>
                           <p className={`text-xs ${
@@ -361,14 +361,14 @@ const WatchPartyPage: React.FC = () => {
                           }`}>
                             {message.senderId === userId ? 'You' : message.senderName}
                           </p>
-                          <p className="text-white">{message.content}</p>
+                          <p className="text-white text-xs md:text-sm">{message.content}</p>
                         </div>
                       )}
                     </div>
                   ))}
                   
                   {messages.length === 0 && (
-                    <div className="text-center text-gray-500 my-10">
+                    <div className="text-center text-gray-500 my-10 text-sm">
                       <p>No messages yet. Say hello!</p>
                     </div>
                   )}
@@ -376,9 +376,9 @@ const WatchPartyPage: React.FC = () => {
                 
                 {/* Reaction GIFs Panel */}
                 {showGifs && (
-                  <div className="p-3 border-t border-gray-800 bg-netflix-black/30">
+                  <div className="p-2 md:p-3 border-t border-gray-800 bg-netflix-black/30">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-white text-sm font-medium">Reaction GIFs</h4>
+                      <h4 className="text-white text-xs md:text-sm font-medium">Reaction GIFs</h4>
                       <button 
                         onClick={() => setShowGifs(false)}
                         className="text-gray-400 hover:text-white"
@@ -389,28 +389,28 @@ const WatchPartyPage: React.FC = () => {
                       </button>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                    <div className="grid grid-cols-2 gap-2 max-h-48 md:max-h-60 overflow-y-auto">
                       {gifsLoading ? (
                         <div className="col-span-2 text-center py-4">
-                          <div className="w-8 h-8 border-2 border-netflix-red border-t-transparent rounded-full animate-spin mx-auto"></div>
+                          <div className="w-6 h-6 md:w-8 md:h-8 border-2 border-netflix-red border-t-transparent rounded-full animate-spin mx-auto"></div>
                         </div>
                       ) : gifs.length > 0 ? (
                         gifs.map(gif => (
                           <div 
                             key={gif.id}
                             onClick={() => handleSendGif(gif.url, gif.title)}
-                            className="cursor-pointer rounded overflow-hidden hover:ring-2 hover:ring-netflix-red"
+                            className="cursor-pointer rounded overflow-hidden hover:ring-2 hover:ring-netflix-red aspect-square"
                           >
                             <img 
                               src={gif.previewUrl || gif.url} 
                               alt={gif.title}
-                              className="w-full h-24 object-cover"
+                              className="w-full h-full object-cover"
                               loading="lazy"
                             />
                           </div>
                         ))
                       ) : (
-                        <div className="col-span-2 text-center py-4 text-gray-400">
+                        <div className="col-span-2 text-center py-4 text-gray-400 text-xs md:text-sm">
                           No GIFs found. Try a different search term.
                         </div>
                       )}
@@ -419,7 +419,7 @@ const WatchPartyPage: React.FC = () => {
                 )}
                 
                 {/* Chat Input */}
-                <div className="p-3 border-t border-gray-800">
+                <div className="p-2 md:p-3 border-t border-gray-800">
                   <form onSubmit={handleSendMessage} className="flex">
                     <input
                       ref={chatInputRef}
@@ -427,20 +427,20 @@ const WatchPartyPage: React.FC = () => {
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       placeholder="Type a message..."
-                      className="flex-1 bg-gray-800 text-white px-3 py-2 rounded-l-md focus:outline-none"
+                      className="flex-1 bg-gray-800 text-white px-2 md:px-3 py-2 rounded-l-md focus:outline-none text-sm"
                     />
                     
                     <button
                       type="button"
                       onClick={handleSearchGifs}
-                      className="bg-gray-700 text-white px-3 hover:bg-gray-600"
+                      className="bg-gray-700 text-white px-2 md:px-3 hover:bg-gray-600 text-sm"
                     >
                       GIF
                     </button>
                     
                     <button
                       type="submit"
-                      className="bg-netflix-red text-white px-4 py-2 rounded-r-md hover:bg-netflix-red/80"
+                      className="bg-netflix-red text-white px-3 md:px-4 py-2 rounded-r-md hover:bg-netflix-red/80 text-sm"
                     >
                       Send
                     </button>
@@ -448,24 +448,24 @@ const WatchPartyPage: React.FC = () => {
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center flex-col p-8 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-700 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex-1 flex items-center justify-center flex-col p-4 md:p-8 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 md:h-16 md:w-16 text-gray-700 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-6a2 2 0 012-2h10" />
                 </svg>
-                <h3 className="text-white text-lg font-medium mb-2">Join or create a watch party</h3>
-                <p className="text-gray-400 mb-6">Watch movies together with friends and chat in real-time</p>
+                <h3 className="text-white text-base md:text-lg font-medium mb-2">Join or create a watch party</h3>
+                <p className="text-gray-400 mb-6 text-sm md:text-base">Watch movies together with friends and chat in real-time</p>
                 
                 <div className="space-y-3 w-full">
                   <button 
                     onClick={() => setShowJoinModal(true)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm md:text-base"
                   >
                     Join Existing Party
                   </button>
                   
                   <button 
                     onClick={handleCreateParty}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm md:text-base"
                   >
                     Create New Party
                   </button>
@@ -491,39 +491,39 @@ const WatchPartyPage: React.FC = () => {
       
       {/* Join Party Modal */}
       {showJoinModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
-          <div className="bg-netflix-dark rounded-lg w-full max-w-md p-6">
-            <h3 className="text-white text-xl font-bold mb-4">Join Watch Party</h3>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 p-4">
+          <div className="bg-netflix-dark rounded-lg w-full max-w-md p-4 md:p-6">
+            <h3 className="text-white text-lg md:text-xl font-bold mb-4">Join Watch Party</h3>
             
             <div className="space-y-4">
               <div>
-                <label htmlFor="partyId" className="block text-gray-300 mb-1">Party ID</label>
+                <label htmlFor="partyId" className="block text-gray-300 mb-1 text-sm">Party ID</label>
                 <input
                   id="partyId"
                   type="text"
                   value={partyId}
                   onChange={(e) => setPartyId(e.target.value)}
                   placeholder="Enter the party ID"
-                  className="w-full bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none"
+                  className="w-full bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none text-sm"
                 />
               </div>
               
               <div>
-                <label htmlFor="accessCode" className="block text-gray-300 mb-1">Access Code (if private)</label>
+                <label htmlFor="accessCode" className="block text-gray-300 mb-1 text-sm">Access Code (if private)</label>
                 <input
                   id="accessCode"
                   type="text"
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value)}
                   placeholder="Enter access code if needed"
-                  className="w-full bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none"
+                  className="w-full bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none text-sm"
                 />
               </div>
               
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   onClick={() => setShowJoinModal(false)}
-                  className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  className="bg-gray-700 text-white px-3 md:px-4 py-2 rounded hover:bg-gray-600 text-sm"
                 >
                   Cancel
                 </button>
@@ -532,7 +532,7 @@ const WatchPartyPage: React.FC = () => {
                   disabled={!partyId.trim()}
                   className={`${
                     !partyId.trim() ? 'bg-gray-600 cursor-not-allowed' : 'bg-netflix-red hover:bg-netflix-red/80'
-                  } text-white px-4 py-2 rounded`}
+                  } text-white px-3 md:px-4 py-2 rounded text-sm`}
                 >
                   Join
                 </button>
