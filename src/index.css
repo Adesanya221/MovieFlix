@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-netflix-black text-white;
+  }
+}
+
+@layer components {
+  .netflix-btn {
+    @apply bg-netflix-red text-white py-2 px-4 rounded font-semibold transition duration-300 hover:bg-opacity-80;
+  }
+  
+  .netflix-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .movie-card {
+    @apply bg-netflix-dark rounded-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-10 shadow-lg;
+  }
+  
+  .movie-poster {
+    @apply relative pb-[150%] overflow-hidden;
+  }
+  
+  .movie-info {
+    @apply p-4;
+  }
+
+  /* Loading animation */
+  .shimmer {
+    @apply relative overflow-hidden bg-netflix-dark/50;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Hide scrollbar utility */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Netflix card styling */
+  .netflix-card-shadow {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Netflix hover gradient overlay */
+  .hover-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%);
+  }
+  
+  /* Netflix video overlay */
+  .netflix-video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Netflix animation effects */
+  @keyframes netflix-fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes netflix-slideup {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .netflix-fadein {
+    animation: netflix-fadein 0.5s ease-in-out;
+  }
+  
+  .netflix-slideup {
+    animation: netflix-slideup 0.5s ease-out;
+  }
+  
+  /* Improved shimmer for movies */
+  .netflix-shimmer {
+    background: linear-gradient(
+      to right,
+      rgba(20, 20, 20, 1) 0%,
+      rgba(40, 40, 40, 1) 20%,
+      rgba(20, 20, 20, 1) 40%,
+      rgba(20, 20, 20, 1) 100%
+    );
+    background-size: 200% 100%;
+    animation: netflix-shimmer-effect 1.5s infinite linear;
+  }
+  
+  @keyframes netflix-shimmer-effect {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: #141414;
+    background-image: linear-gradient(
+      to right,
+      #141414 0%,
+      #232323 20%,
+      #141414 40%,
+      #141414 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 800px 100%;
+    animation: shimmerAnimation 2s infinite linear;
+  }
+
+  @keyframes shimmerAnimation {
+    0% {
+      background-position: -468px 0;
+    }
+    100% {
+      background-position: 468px 0;
+    }
+  }
+
+  /* Netflix-specific card styles */
+  .netflix-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .netflix-card-grid {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) {
+    .netflix-card-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  }
+
+  /* Improved card hover effect */
+  .movie-card-hover-effect {
+    transition: all 0.3s ease;
+  }
+
+  .movie-card-hover-effect:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Scrollbar styling for the horizontal movie rows */
+  .netflix-scroll-row {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding-bottom: 1rem;
+  }
+
+  .netflix-scroll-row::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
