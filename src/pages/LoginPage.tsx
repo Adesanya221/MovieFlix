@@ -41,10 +41,10 @@ const LoginPage: React.FC = () => {
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       
-      {/* Large background "MOVIES" text */}
+      {/* Large background "MOVIEFLIX" text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <h1 className="text-[20vw] font-extrabold text-white/10 select-none tracking-tighter rotate-[-5deg]">
-          MOVIES
+        <h1 className="text-[15vw] font-extrabold text-white/10 select-none tracking-tighter rotate-[-5deg]">
+          MOVIEFLIX
         </h1>
       </div>
       
