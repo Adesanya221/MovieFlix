@@ -308,24 +308,41 @@ const MovieDetailPage: React.FC = () => {
               {selectedEmotion && (
                 <div className="mt-3 w-full">
                   {gifsLoading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+                    <div className="hidden sm:flex space-x-4 overflow-x-auto pb-4">
                       {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="w-full h-24 bg-netflix-dark shimmer rounded"></div>
+                        <div key={i} className="w-48 h-32 bg-netflix-dark shimmer rounded"></div>
                       ))}
                     </div>
                   ) : gifs.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 pb-4">
-                      {gifs.map(gif => (
-                        <div key={gif.id} className="w-full aspect-square max-h-[130px] overflow-hidden">
-                          <img 
-                            src={gif.url} 
-                            alt={gif.title}
-                            className="w-full h-full object-cover rounded"
-                            loading="lazy"
-                          />
-                        </div>
-                      ))}
-                    </div>
+                    <>
+                      {/* Mobile view - grid layout */}
+                      <div className="grid grid-cols-2 gap-2 sm:hidden pb-4">
+                        {gifs.map(gif => (
+                          <div key={gif.id} className="w-full aspect-square max-h-[130px] overflow-hidden">
+                            <img 
+                              src={gif.url} 
+                              alt={gif.title}
+                              className="w-full h-full object-cover rounded"
+                              loading="lazy"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Desktop view - original horizontal scroll layout */}
+                      <div className="hidden sm:flex space-x-4 overflow-x-auto pb-4">
+                        {gifs.map(gif => (
+                          <div key={gif.id} className="flex-shrink-0">
+                            <img 
+                              src={gif.url} 
+                              alt={gif.title}
+                              className="h-32 rounded"
+                              style={{ maxWidth: 'none' }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <p className="text-gray-400">No reaction GIFs found. Try another emotion!</p>
                   )}

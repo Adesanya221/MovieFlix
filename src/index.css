@@ -256,3 +256,22 @@ html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
+
+/* Only apply overflow handling on mobile screens */
+@media (max-width: 640px) {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .netflix-container {
+    overflow-x: hidden;
+  }
+}
+
+/* Restore normal behavior on desktop */
+@media (min-width: 641px) {
+  .netflix-container {
+    overflow-x: visible;
+  }
+}

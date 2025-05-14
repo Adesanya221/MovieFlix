@@ -316,7 +316,7 @@ const WatchPartyPage: React.FC = () => {
                 {/* Chat Messages */}
                 <div 
                   ref={chatContainerRef}
-                  className="flex-1 overflow-y-auto p-2 md:p-3 space-y-2 md:space-y-3 max-h-[350px] md:max-h-[500px]"
+                  className="flex-1 overflow-y-auto p-2 sm:p-3 space-y-2 sm:space-y-3 max-h-[350px] sm:max-h-[500px]"
                 >
                   {messages.map((message, index) => (
                     <div key={index} className={`${
@@ -327,11 +327,11 @@ const WatchPartyPage: React.FC = () => {
                           : 'text-left'
                     }`}>
                       {message.type === 'system' ? (
-                        <div className="bg-gray-800/50 inline-block px-3 py-1 rounded text-xs md:text-sm">
+                        <div className="bg-gray-800/50 inline-block px-3 py-1 rounded text-xs sm:text-sm">
                           {message.content}
                         </div>
                       ) : message.type === 'reaction' ? (
-                        <div className={`inline-block max-w-[90%] ${
+                        <div className={`inline-block max-w-[90%] sm:max-w-[85%] ${
                           message.senderId === userId ? 'bg-blue-600' : 'bg-gray-700'
                         } rounded-lg p-2`}>
                           <p className={`text-xs ${
@@ -344,16 +344,16 @@ const WatchPartyPage: React.FC = () => {
                               <img 
                                 src={message.reactionGifUrl} 
                                 alt={message.content}
-                                className="w-full object-contain"
-                                style={{ maxHeight: '120px' }}
+                                className="w-full sm:w-auto sm:max-w-full object-contain sm:object-cover"
+                                style={{ maxHeight: '120px', height: 'auto' }}
                                 loading="lazy"
                               />
                             </div>
                           )}
-                          <p className="text-white text-xs md:text-sm mt-1">{message.content}</p>
+                          <p className="text-white text-xs sm:text-sm mt-1">{message.content}</p>
                         </div>
                       ) : (
-                        <div className={`inline-block max-w-[90%] ${
+                        <div className={`inline-block max-w-[90%] sm:max-w-[85%] ${
                           message.senderId === userId ? 'bg-blue-600' : 'bg-gray-700'
                         } rounded-lg p-2`}>
                           <p className={`text-xs ${
@@ -361,7 +361,7 @@ const WatchPartyPage: React.FC = () => {
                           }`}>
                             {message.senderId === userId ? 'You' : message.senderName}
                           </p>
-                          <p className="text-white text-xs md:text-sm">{message.content}</p>
+                          <p className="text-white text-xs sm:text-base">{message.content}</p>
                         </div>
                       )}
                     </div>
@@ -376,9 +376,9 @@ const WatchPartyPage: React.FC = () => {
                 
                 {/* Reaction GIFs Panel */}
                 {showGifs && (
-                  <div className="p-2 md:p-3 border-t border-gray-800 bg-netflix-black/30">
+                  <div className="p-2 sm:p-3 border-t border-gray-800 bg-netflix-black/30">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-white text-xs md:text-sm font-medium">Reaction GIFs</h4>
+                      <h4 className="text-white text-xs sm:text-sm font-medium">Reaction GIFs</h4>
                       <button 
                         onClick={() => setShowGifs(false)}
                         className="text-gray-400 hover:text-white"
@@ -389,10 +389,11 @@ const WatchPartyPage: React.FC = () => {
                       </button>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-2 max-h-48 md:max-h-60 overflow-y-auto">
+                    {/* Mobile view - grid layout */}
+                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto sm:hidden">
                       {gifsLoading ? (
                         <div className="col-span-2 text-center py-4">
-                          <div className="w-6 h-6 md:w-8 md:h-8 border-2 border-netflix-red border-t-transparent rounded-full animate-spin mx-auto"></div>
+                          <div className="w-6 h-6 border-2 border-netflix-red border-t-transparent rounded-full animate-spin mx-auto"></div>
                         </div>
                       ) : gifs.length > 0 ? (
                         gifs.map(gif => (
@@ -410,7 +411,35 @@ const WatchPartyPage: React.FC = () => {
                           </div>
                         ))
                       ) : (
-                        <div className="col-span-2 text-center py-4 text-gray-400 text-xs md:text-sm">
+                        <div className="col-span-2 text-center py-4 text-gray-400 text-xs">
+                          No GIFs found. Try a different search term.
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Desktop view - original layout */}
+                    <div className="hidden sm:grid sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                      {gifsLoading ? (
+                        <div className="col-span-3 text-center py-4">
+                          <div className="w-8 h-8 border-2 border-netflix-red border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        </div>
+                      ) : gifs.length > 0 ? (
+                        gifs.map(gif => (
+                          <div 
+                            key={gif.id}
+                            onClick={() => handleSendGif(gif.url, gif.title)}
+                            className="cursor-pointer rounded overflow-hidden hover:ring-2 hover:ring-netflix-red"
+                          >
+                            <img 
+                              src={gif.previewUrl || gif.url} 
+                              alt={gif.title}
+                              className="w-full h-24 object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-span-3 text-center py-4 text-gray-400">
                           No GIFs found. Try a different search term.
                         </div>
                       )}
@@ -419,7 +448,7 @@ const WatchPartyPage: React.FC = () => {
                 )}
                 
                 {/* Chat Input */}
-                <div className="p-2 md:p-3 border-t border-gray-800">
+                <div className="p-2 sm:p-3 border-t border-gray-800">
                   <form onSubmit={handleSendMessage} className="flex">
                     <input
                       ref={chatInputRef}
@@ -427,20 +456,20 @@ const WatchPartyPage: React.FC = () => {
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       placeholder="Type a message..."
-                      className="flex-1 bg-gray-800 text-white px-2 md:px-3 py-2 rounded-l-md focus:outline-none text-sm"
+                      className="flex-1 bg-gray-800 text-white px-2 sm:px-3 py-2 rounded-l-md focus:outline-none text-sm"
                     />
                     
                     <button
                       type="button"
                       onClick={handleSearchGifs}
-                      className="bg-gray-700 text-white px-2 md:px-3 hover:bg-gray-600 text-sm"
+                      className="bg-gray-700 text-white px-2 sm:px-3 hover:bg-gray-600 text-sm"
                     >
                       GIF
                     </button>
                     
                     <button
                       type="submit"
-                      className="bg-netflix-red text-white px-3 md:px-4 py-2 rounded-r-md hover:bg-netflix-red/80 text-sm"
+                      className="bg-netflix-red text-white px-3 sm:px-4 py-2 rounded-r-md hover:bg-netflix-red/80 text-sm"
                     >
                       Send
                     </button>
