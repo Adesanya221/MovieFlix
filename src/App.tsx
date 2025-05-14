@@ -13,6 +13,7 @@ import GenresPage from './pages/GenresPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import WatchPartyPage from './pages/WatchPartyPage';
 
 const HeaderWithNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -24,8 +25,10 @@ const HeaderWithNavigation: React.FC = () => {
     }
   };
   
-  // Don't show header on login and signup pages
-  if (location.pathname === '/login' || location.pathname === '/signup') {
+  // Don't show header on login, signup, and watch party pages
+  if (location.pathname === '/login' || 
+      location.pathname === '/signup' || 
+      location.pathname.startsWith('/watch-party')) {
     return null;
   }
   
@@ -35,8 +38,10 @@ const HeaderWithNavigation: React.FC = () => {
 const FooterWithConditionalRendering: React.FC = () => {
   const location = useLocation();
   
-  // Don't show footer on login and signup pages
-  if (location.pathname === '/login' || location.pathname === '/signup') {
+  // Don't show footer on login, signup, and watch party pages
+  if (location.pathname === '/login' || 
+      location.pathname === '/signup' || 
+      location.pathname.startsWith('/watch-party')) {
     return null;
   }
   
@@ -58,6 +63,7 @@ function App() {
             <Route path="/genres" element={<GenresPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/watch-party/:id" element={<WatchPartyPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>

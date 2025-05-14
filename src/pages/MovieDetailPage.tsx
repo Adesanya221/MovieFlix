@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import useMovieDetails from '../hooks/useMovieDetails';
 import useSimilarMovies from '../hooks/useSimilarMovies';
+import useRecommendations from '../hooks/useRecommendations';
+import useMovieTrivia from '../hooks/useMovieTrivia';
+import useReactionGifs from '../hooks/useReactionGifs';
 import MovieGrid from '../components/MovieGrid';
 
 const MovieDetailPage: React.FC = () => {
   const { id = '0' } = useParams<{ id: string }>();
+  const [activeTab, setActiveTab] = useState<'similar' | 'recommendations' | 'trivia'>('similar');
+  const [selectedEmotion, setSelectedEmotion] = useState<string>('');
   
   // Handle different ID formats
   const getMovieId = (idParam: string): number => {
@@ -21,10 +26,25 @@ const MovieDetailPage: React.FC = () => {
   };
   
   const movieId = getMovieId(id);
-  console.log(`Processing movie with ID param: "${id}" → numeric ID: ${movieId}`);
   
+  // Fetch movie data using our hooks
   const { movie, loading, error } = useMovieDetails(movieId);
   const { similarMovies, loading: similarLoading } = useSimilarMovies(movieId);
+  const { recommendations, loading: recommendationsLoading } = useRecommendations(movieId);
+  const { trivia, loading: triviaLoading } = useMovieTrivia(movieId);
+  const { gifs, loading: gifsLoading, searchGifs } = useReactionGifs();
+  
+  // Predefined emotions for reaction GIFs
+  const emotions = [
+    'love it', 'hate it', 'wow', 'shocked', 'boring', 
+    'awesome', 'laugh', 'cry', 'amazing', 'confused'
+  ];
+  
+  // Handle emotion selection and GIF search
+  const handleEmotionClick = (emotion: string) => {
+    setSelectedEmotion(emotion);
+    searchGifs(emotion);
+  };
 
   if (loading) {
     return (
@@ -101,6 +121,11 @@ const MovieDetailPage: React.FC = () => {
     return `${hours}h ${mins}m`;
   };
 
+  // Get a random quote from trivia if available
+  const randomQuote = trivia.quotes.length > 0 
+    ? trivia.quotes[Math.floor(Math.random() * trivia.quotes.length)]
+    : null;
+
   return (
     <div className="min-h-screen bg-netflix-black">
       {/* Backdrop Image */}
@@ -114,6 +139,15 @@ const MovieDetailPage: React.FC = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/60 to-transparent"></div>
           <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-netflix-black to-transparent"></div>
+          
+          {/* Random Quote Overlay */}
+          {randomQuote && (
+            <div className="absolute bottom-32 left-0 right-0 text-center px-4">
+              <div className="inline-block max-w-2xl mx-auto bg-black/80 px-6 py-4 rounded-lg text-white italic text-lg">
+                "{randomQuote}"
+              </div>
+            </div>
+          )}
         </div>
       )}
       
@@ -124,6 +158,34 @@ const MovieDetailPage: React.FC = () => {
           <div className="flex-shrink-0 w-64 md:w-72 mx-auto md:mx-0">
             <div className="rounded-md overflow-hidden shadow-lg">
               <img src={posterImage} alt={movie.title} className="w-full" />
+            </div>
+            
+            {/* Movie Facts and Trivia Button */}
+            {trivia && (trivia.facts.length > 0 || trivia.didYouKnow.length > 0) && (
+              <div className="mt-4">
+                <button 
+                  onClick={() => setActiveTab('trivia')}
+                  className="w-full py-2 px-4 bg-netflix-dark hover:bg-netflix-red transition-colors text-white rounded flex items-center justify-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                  </svg>
+                  Movie Facts
+                </button>
+              </div>
+            )}
+            
+            {/* Watch Party Button */}
+            <div className="mt-3">
+              <Link 
+                to={`/watch-party/${movieId}`}
+                className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 transition-colors text-white rounded flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                </svg>
+                Start Watch Party
+              </Link>
             </div>
           </div>
           
@@ -187,6 +249,16 @@ const MovieDetailPage: React.FC = () => {
               <p className="text-gray-300">{movie.overview}</p>
             </div>
             
+            {/* Did You Know Section */}
+            {trivia.didYouKnow.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xl font-medium text-white mb-3">Did You Know?</h3>
+                <div className="bg-netflix-dark/50 rounded-md p-4">
+                  <p className="text-gray-300">{trivia.didYouKnow[0]}</p>
+                </div>
+              </div>
+            )}
+            
             {/* Additional Info */}
             {(movie.budget > 0 || movie.revenue > 0) && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm p-4 bg-netflix-dark/50 rounded-md">
@@ -212,32 +284,245 @@ const MovieDetailPage: React.FC = () => {
                 )}
               </div>
             )}
+            
+            {/* Reaction GIFs Section */}
+            <div className="mt-10">
+              <h3 className="text-xl font-medium text-white mb-3">Your Reaction?</h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {emotions.map(emotion => (
+                  <button
+                    key={emotion}
+                    onClick={() => handleEmotionClick(emotion)}
+                    className={`py-1 px-3 rounded-full text-sm ${
+                      selectedEmotion === emotion 
+                        ? 'bg-netflix-red text-white' 
+                        : 'bg-netflix-dark text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    {emotion}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Display GIFs */}
+              {selectedEmotion && (
+                <div className="mt-3">
+                  {gifsLoading ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="w-full h-28 bg-netflix-dark shimmer rounded"></div>
+                      ))}
+                    </div>
+                  ) : gifs.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pb-4">
+                      {gifs.map(gif => (
+                        <div key={gif.id} className="w-full h-auto">
+                          <img 
+                            src={gif.url} 
+                            alt={gif.title}
+                            className="rounded w-full object-cover"
+                            style={{ maxHeight: '150px' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-400">No reaction GIFs found. Try another emotion!</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Similar Movies Section */}
+      {/* Tabbed Content Section */}
       <div className="mt-16 pb-16 pt-8 border-t border-gray-800">
         <div className="netflix-container">
-          <h2 className="text-2xl font-bold text-white mb-6 px-4 md:px-8 flex items-center">
-            More Like This
-            {similarMovies?.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-400">{similarMovies.length} titles</span>
-            )}
-          </h2>
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-800 mb-6">
+            <button
+              onClick={() => setActiveTab('similar')}
+              className={`px-6 py-3 text-lg font-medium ${
+                activeTab === 'similar' 
+                  ? 'text-white border-b-2 border-netflix-red' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Similar Movies
+            </button>
+            <button
+              onClick={() => setActiveTab('recommendations')}
+              className={`px-6 py-3 text-lg font-medium ${
+                activeTab === 'recommendations' 
+                  ? 'text-white border-b-2 border-netflix-red' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Recommended For You
+            </button>
+            <button
+              onClick={() => setActiveTab('trivia')}
+              className={`px-6 py-3 text-lg font-medium ${
+                activeTab === 'trivia' 
+                  ? 'text-white border-b-2 border-netflix-red' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Trivia & Facts
+            </button>
+          </div>
           
-          {similarMovies && similarMovies.length > 0 ? (
-            <MovieGrid 
-              movies={similarMovies} 
-              loading={similarLoading} 
-              isRow={true}
-              explorePath={`/similar/${movieId}`}
-            />
-          ) : !similarLoading && (
-            <div className="px-4 md:px-8 py-4">
-              <div className="bg-netflix-dark/50 rounded-md p-6 text-center">
-                <p className="text-gray-400">No similar movies found for this title.</p>
-              </div>
+          {/* Similar Movies Tab */}
+          {activeTab === 'similar' && (
+            <>
+              <h2 className="text-2xl font-bold text-white mb-6 px-4 md:px-8 flex items-center">
+                More Like This
+                {similarMovies?.length > 0 && (
+                  <span className="ml-2 text-sm font-normal text-gray-400">{similarMovies.length} titles</span>
+                )}
+              </h2>
+              
+              {similarMovies && similarMovies.length > 0 ? (
+                <MovieGrid 
+                  movies={similarMovies} 
+                  loading={similarLoading} 
+                  isRow={true}
+                  explorePath={`/similar/${movieId}`}
+                />
+              ) : !similarLoading && (
+                <div className="px-4 md:px-8 py-4">
+                  <div className="bg-netflix-dark/50 rounded-md p-6 text-center">
+                    <p className="text-gray-400">No similar movies found for this title.</p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          
+          {/* Recommendations Tab */}
+          {activeTab === 'recommendations' && (
+            <>
+              <h2 className="text-2xl font-bold text-white mb-6 px-4 md:px-8 flex items-center">
+                Recommended For You
+                {recommendations?.length > 0 && (
+                  <span className="ml-2 text-sm font-normal text-gray-400">{recommendations.length} titles</span>
+                )}
+              </h2>
+              
+              {recommendations && recommendations.length > 0 ? (
+                <MovieGrid 
+                  movies={recommendations} 
+                  loading={recommendationsLoading} 
+                  isRow={true}
+                />
+              ) : !recommendationsLoading && (
+                <div className="px-4 md:px-8 py-4">
+                  <div className="bg-netflix-dark/50 rounded-md p-6 text-center">
+                    <p className="text-gray-400">No personalized recommendations available for this title.</p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          
+          {/* Trivia Tab */}
+          {activeTab === 'trivia' && (
+            <div className="px-4 md:px-8">
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Trivia & Facts for {movie.title}
+              </h2>
+              
+              {triviaLoading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-full h-24 bg-netflix-dark shimmer rounded"></div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {/* Movie Facts */}
+                  {trivia.facts.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-3">Interesting Facts</h3>
+                      <div className="space-y-4">
+                        {trivia.facts.map((fact, index) => (
+                          <div key={index} className="bg-netflix-dark/50 rounded-md p-4">
+                            <p className="text-gray-300">{fact}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Movie Quotes */}
+                  {trivia.quotes.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-3">Memorable Quotes</h3>
+                      <div className="space-y-4">
+                        {trivia.quotes.map((quote, index) => (
+                          <div key={index} className="bg-netflix-dark/50 rounded-md p-4">
+                            <p className="text-gray-300 italic">{quote}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Movie Goofs */}
+                  {trivia.goofs.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-3">Goofs and Errors</h3>
+                      <div className="space-y-4">
+                        {trivia.goofs.map((goof, index) => (
+                          <div key={index} className="bg-netflix-dark/50 rounded-md p-4">
+                            <p className="text-gray-300">{goof}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Did You Know */}
+                  {trivia.didYouKnow.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-3">Did You Know?</h3>
+                      <div className="space-y-4">
+                        {trivia.didYouKnow.map((fact, index) => (
+                          <div key={index} className="bg-netflix-dark/50 rounded-md p-4">
+                            <p className="text-gray-300">{fact}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Awards */}
+                  {trivia.awards.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-3">Awards</h3>
+                      <div className="space-y-4">
+                        {trivia.awards.map((award, index) => (
+                          <div key={index} className="bg-netflix-dark/50 rounded-md p-4">
+                            <p className="text-gray-300">{award}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* No trivia message */}
+                  {trivia.facts.length === 0 && 
+                   trivia.quotes.length === 0 && 
+                   trivia.goofs.length === 0 && 
+                   trivia.didYouKnow.length === 0 && 
+                   trivia.awards.length === 0 && (
+                    <div className="bg-netflix-dark/50 rounded-md p-6 text-center">
+                      <p className="text-gray-400">No trivia or facts available for this movie.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -248,10 +533,10 @@ const MovieDetailPage: React.FC = () => {
             to="/" 
             className="inline-flex items-center text-gray-400 hover:text-white ml-4 md:ml-8"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
-            Back to Movies
+            Back to Browse
           </Link>
         </div>
       </div>

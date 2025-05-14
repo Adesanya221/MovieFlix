@@ -65,10 +65,11 @@ export const extractYouTubeId = (url: string): string | null => {
   
   // Regular expressions for different YouTube URL formats
   const regexps = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?]*)/,
-    /youtube\.com\/embed\/([^&\?]*)/,
-    /youtube\.com\/v\/([^&\?]*)/,
-    /youtube\.com\/user\/[^\/]+\/\?v=([^&\?]*)/
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([^?]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/user\/[^/]+\/([^?]+)/
   ];
   
   for (const regex of regexps) {
@@ -94,8 +95,11 @@ export const getYouTubeThumbnail = (
   return `https://img.youtube.com/vi/${videoId}/${quality}default.jpg`;
 };
 
-export default {
+// Create a named constant for the exported object
+const youtubeTrailerService = {
   fetchMovieTrailer,
   extractYouTubeId,
   getYouTubeThumbnail
-}; 
+};
+
+export default youtubeTrailerService; 
