@@ -37,8 +37,16 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('https://assets.nflxext.com/ffe/siteui/vlv3/a43711df-c428-4f88-8bb3-b2ac5f20608f/32935458-d049-44c2-b94b-32f16d60ded1/NG-en-20230227-popsignuptwoweeks-perspective_alpha_website_small.jpg')]">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[url('https://assets.nflxext.com/ffe/siteui/vlv3/a43711df-c428-4f88-8bb3-b2ac5f20608f/32935458-d049-44c2-b94b-32f16d60ded1/NG-en-20230227-popsignuptwoweeks-perspective_alpha_website_small.jpg')]">
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+      
+      {/* Large background "MOVIES" text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+        <h1 className="text-[20vw] font-extrabold text-white/10 select-none tracking-tighter rotate-[-5deg]">
+          MOVIES
+        </h1>
+      </div>
       
       <div className="z-10 w-full max-w-md p-8 bg-black/75 rounded-md shadow-xl">
         <h1 className="text-3xl font-bold text-white mb-6">Sign In</h1>
