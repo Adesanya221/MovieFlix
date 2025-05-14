@@ -47,4 +47,4 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 
 ## Learn More
 
-Deployed on Vercel: movie-flix-887r4dddt-adesanya221s-projects.vercel.app/
+Deployed on Vercel: [MovieFlix App](https://movie-flix-887r4dddt-adesanya221s-projects.vercel.app)
