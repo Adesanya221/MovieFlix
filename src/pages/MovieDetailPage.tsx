@@ -152,12 +152,12 @@ const MovieDetailPage: React.FC = () => {
       )}
       
       {/* Movie Content */}
-      <div className={`netflix-container ${backdropImage ? '-mt-64' : 'pt-32'} relative z-10`}>
-        <div className="flex flex-col md:flex-row gap-8">
+      <div className={`netflix-container prevent-overflow ${backdropImage ? '-mt-64' : 'pt-32'} relative z-10`}>
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8">
           {/* Movie Poster */}
-          <div className="flex-shrink-0 w-64 md:w-72 mx-auto md:mx-0">
+          <div className="flex-shrink-0 w-48 md:w-64 mx-auto md:mx-0">
             <div className="rounded-md overflow-hidden shadow-lg">
-              <img src={posterImage} alt={movie.title} className="w-full" />
+              <img src={posterImage} alt={movie.title} className="w-full responsive-image" />
             </div>
             
             {/* Movie Facts and Trivia Button */}
@@ -190,24 +190,24 @@ const MovieDetailPage: React.FC = () => {
           </div>
           
           {/* Movie Info */}
-          <div className="flex-1 p-4 md:p-0">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{movie.title}</h1>
+          <div className="flex-1 p-3 md:p-0">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 prevent-overflow">{movie.title}</h1>
             
             {movie.tagline && (
-              <p className="text-gray-300 text-lg italic mb-4">{movie.tagline}</p>
+              <p className="text-gray-300 text-base md:text-lg italic mb-4 prevent-overflow">{movie.tagline}</p>
             )}
             
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-6">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 md:mb-6">
               {movie.release_date && (
-                <span className="text-gray-400 text-sm">{movie.release_date.split('-')[0]}</span>
+                <span className="text-gray-400 mobile-text-sm">{movie.release_date.split('-')[0]}</span>
               )}
               
               {movie.runtime > 0 && (
-                <span className="text-gray-400 text-sm">{formatRuntime(movie.runtime)}</span>
+                <span className="text-gray-400 mobile-text-sm">{formatRuntime(movie.runtime)}</span>
               )}
               
               <span className="flex items-center">
-                <span className="w-10 h-10 rounded-full flex items-center justify-center bg-netflix-dark text-green-500 font-bold">
+                <span className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-netflix-dark text-green-500 font-bold">
                   {Math.round(movie.vote_average * 10)}
                 </span>
                 <span className="text-green-500 ml-1 text-sm">%</span>
@@ -215,12 +215,12 @@ const MovieDetailPage: React.FC = () => {
             </div>
             
             {/* Genre Tags */}
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-4 md:mb-6">
               {movie.genres.map(genre => (
                 <Link 
                   key={genre.id} 
                   to={`/genre/${genre.id}`}
-                  className="px-3 py-1 bg-netflix-dark rounded-full text-sm text-white hover:bg-netflix-red transition-colors duration-200"
+                  className="px-2 py-1 md:px-3 md:py-1 bg-netflix-dark rounded-full text-xs md:text-sm text-white hover:bg-netflix-red transition-colors duration-200"
                 >
                   {genre.name}
                 </Link>
@@ -228,33 +228,34 @@ const MovieDetailPage: React.FC = () => {
             </div>
             
             {/* Action Buttons */}
-            <div className="flex space-x-3 mb-8">
-              <button className="bg-netflix-red hover:bg-netflix-red/80 text-white px-6 py-2 rounded-md flex items-center">
+            <div className="flex space-x-3 mb-4 md:mb-8">
+              <button className="bg-netflix-red hover:bg-netflix-red/80 text-white px-4 py-2 rounded-md flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
                 Play
               </button>
-              <button className="bg-gray-700/80 hover:bg-gray-600 text-white px-6 py-2 rounded-md flex items-center">
+              <button className="bg-gray-700/80 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
-                Add to My List
+                <span className="hidden sm:inline">Add to My List</span>
+                <span className="inline sm:hidden">My List</span>
               </button>
             </div>
             
             {/* Overview */}
-            <div className="mb-8">
-              <h3 className="text-xl font-medium text-white mb-3">Overview</h3>
-              <p className="text-gray-300">{movie.overview}</p>
+            <div className="mb-4 md:mb-8">
+              <h3 className="text-lg md:text-xl font-medium text-white mb-2 md:mb-3">Overview</h3>
+              <p className="text-gray-300 text-sm md:text-base prevent-overflow">{movie.overview}</p>
             </div>
             
             {/* Did You Know Section */}
             {trivia.didYouKnow.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-medium text-white mb-3">Did You Know?</h3>
-                <div className="bg-netflix-dark/50 rounded-md p-4">
-                  <p className="text-gray-300">{trivia.didYouKnow[0]}</p>
+              <div className="mb-4 md:mb-8">
+                <h3 className="text-lg md:text-xl font-medium text-white mb-2 md:mb-3">Did You Know?</h3>
+                <div className="bg-netflix-dark/50 rounded-md p-3 md:p-4">
+                  <p className="text-gray-300 text-sm md:text-base prevent-overflow">{trivia.didYouKnow[0]}</p>
                 </div>
               </div>
             )}
@@ -286,9 +287,9 @@ const MovieDetailPage: React.FC = () => {
             )}
             
             {/* Reaction GIFs Section */}
-            <div className="mt-10 overflow-hidden">
+            <div className="mt-10">
               <h3 className="text-xl font-medium text-white mb-3">Your Reaction?</h3>
-              <div className="flex flex-wrap gap-2 mb-4 max-w-full">
+              <div className="flex flex-wrap gap-2 mb-4">
                 {emotions.map(emotion => (
                   <button
                     key={emotion}
@@ -306,43 +307,26 @@ const MovieDetailPage: React.FC = () => {
               
               {/* Display GIFs */}
               {selectedEmotion && (
-                <div className="mt-3 w-full">
+                <div className="mt-3">
                   {gifsLoading ? (
-                    <div className="hidden sm:flex space-x-4 overflow-x-auto pb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="w-48 h-32 bg-netflix-dark shimmer rounded"></div>
+                        <div key={i} className="w-full h-28 bg-netflix-dark shimmer rounded"></div>
                       ))}
                     </div>
                   ) : gifs.length > 0 ? (
-                    <>
-                      {/* Mobile view - grid layout */}
-                      <div className="grid grid-cols-2 gap-2 sm:hidden pb-4">
-                        {gifs.map(gif => (
-                          <div key={gif.id} className="w-full aspect-square max-h-[130px] overflow-hidden">
-                            <img 
-                              src={gif.url} 
-                              alt={gif.title}
-                              className="w-full h-full object-cover rounded"
-                              loading="lazy"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* Desktop view - original horizontal scroll layout */}
-                      <div className="hidden sm:flex space-x-4 overflow-x-auto pb-4">
-                        {gifs.map(gif => (
-                          <div key={gif.id} className="flex-shrink-0">
-                            <img 
-                              src={gif.url} 
-                              alt={gif.title}
-                              className="h-32 rounded"
-                              style={{ maxWidth: 'none' }}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pb-4">
+                      {gifs.map(gif => (
+                        <div key={gif.id} className="w-full h-auto">
+                          <img 
+                            src={gif.url} 
+                            alt={gif.title}
+                            className="rounded w-full object-cover"
+                            style={{ maxHeight: '150px' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <p className="text-gray-400">No reaction GIFs found. Try another emotion!</p>
                   )}
